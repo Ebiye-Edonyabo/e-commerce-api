@@ -53,13 +53,24 @@ class ProductController extends Controller
         // for manually pagiantion
         $page = $request->input(key: 'page', default: 1);
         $products = Cache::remember('products_backend', 30 * 60, fn () => Product::all());
-
+        
+        // search
         if( $search = $request->input('search')) {
             $products = $products->filter( function (Product $product) use($search) {
                 return Str::contains($product->title, $search, ignoreCase: true) || Str::contains($product->description, $search, ignoreCase: true);
             });
         }
+        
         $total = $products->count();
+
+        // sort by price
+        if($sort = $request->input('sort')){
+            if($sort === 'ASC'){
+                $products = $products->sortBy('price');
+            } elseif ($sort === 'DESC') {
+                $products = $products->sortByDesc('price');
+            }
+        }
 
         return [
             'data' => $products->forPage($page, perPage: 5)->values(),

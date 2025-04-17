@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\AmbassadorController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\StatsController;
 use App\Http\Controllers\ProductController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AmbassadorController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -53,10 +54,13 @@ Route::prefix('ambassador')->group( function () {
 
         // ambassador
         Route::get('/{id}/links', [LinkController::class, 'index']);
+        Route::get('stats', [StatsController::class,  'index']);
+        Route::get('ranking', [StatsController::class,  'ranking']);
     });
 
     // guest
     Route::get('products/frontend', [ProductController::class,  'frontEnd']);
     Route::get('products/backend', [ProductController::class,  'backEnd']);
+   
   
 });
